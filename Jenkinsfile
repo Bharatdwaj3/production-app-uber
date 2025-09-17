@@ -6,6 +6,12 @@ pipeline{
                 checkout scm
             }
         }
+        stage('Setup Environment'){
+    steps{
+        bat 'copy backend\\.env.example backend\\.env'
+        bat 'copy frontend\\.env.example frontend\\.env'
+    }
+}
         stage('Build Docker Images'){
             steps{
                 bat 'docker-compose build'
