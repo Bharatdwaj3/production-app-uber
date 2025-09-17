@@ -1,4 +1,3 @@
-
 pipeline{
     agent any
     stages{
@@ -10,13 +9,8 @@ pipeline{
         stage('Setup Environment'){
             steps{
                 echo 'Creating environment files from examples...'
-                
-                // Create backend .env from backend example
                 bat 'copy backend\\.env.example backend\\.env'
-                
-                // Create frontend .env from frontend example
                 bat 'copy frontend\\.env.example frontend\\.env'
-                
                 echo 'Environment files created successfully!'
             }
         }
@@ -35,8 +29,23 @@ pipeline{
         stage('Run Tests'){
             steps{
                 echo 'Running tests...'
-                bat 'docker exec bezzer-backend npm test || true'
-                bat 'docker exec bezzer-frontend npm test || true'
+                
+                // Fixed Windows batch syntax for optional test execution
+                script {
+                    try {
+                        bat 'docker exec bezzer-backend npm test'
+                    } catch (Exception e) {
+                        echo "Backend tests failed or not configured: ${e.getMessage()}"
+                        currentBuild.result = 'UNSTABLE'
+                    }
+                    
+                    try {
+                        bat 'docker exec bezzer-frontend npm test'
+                    } catch (Exception e) {
+                        echo "Frontend tests failed or not configured: ${e.getMessage()}"
+                        currentBuild.result = 'UNSTABLE'
+                    }
+                }
             }
         }
         stage('Cleanup'){
@@ -44,9 +53,20 @@ pipeline{
                 echo 'Cleaning up...'
                 bat 'docker-compose down'
                 
-                // Clean up created .env files after use
-                bat 'del backend\\.env || echo "Backend .env not found"'
-                bat 'del frontend\\.env || echo "Frontend .env not found"'
+                // Clean up created .env files
+                script {
+                    try {
+                        bat 'del backend\\.env'
+                    } catch (Exception e) {
+                        echo 'Backend .env cleanup: file not found'
+                    }
+                    
+                    try {
+                        bat 'del frontend\\.env'
+                    } catch (Exception e) {
+                        echo 'Frontend .env cleanup: file not found'
+                    }
+                }
                 
                 echo 'Cleanup completed!'
             }
@@ -62,6 +82,9 @@ pipeline{
         }
         success {
             echo 'Pipeline succeeded! 🎉'
+        }
+        unstable {
+            echo 'Pipeline completed with warnings (tests may not be configured).'
         }
     }
 }
