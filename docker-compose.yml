@@ -2,6 +2,7 @@ name: mern-app
 
 services: 
   api:
+    container_name: bezzer-backend
     build: 
       context: ./backend
       dockerfile: .dockerfile
@@ -12,6 +13,7 @@ services:
       - 4004:4000
   
   frontend:
+    container_name: bezzer-frontend
     build:
       context: ./frontend
       dockerfile: .dockerfile
