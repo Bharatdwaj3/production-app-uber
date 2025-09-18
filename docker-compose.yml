@@ -27,3 +27,26 @@ services:
       - 5173:5173
     depends_on:
       - api
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    container_name: selenium-grid
+    ports:
+      - "4444:4444"
+      - "7900:7900"
+    environment:
+      - SE_VNC_NO_PASSWORD=1
+    volumes:
+      - /dev/shm:/dev/shm
+
+  tests:
+    container_name: e2e-tests
+    build:
+      context: ./tests
+      dockerfile: .dockerfile
+    depends_on:
+      - frontend
+      - api
+      - selenium
+    networks:
+      - default

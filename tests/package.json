@@ -1,0 +1,12 @@
+{
+  "name": "selenium-tests",
+  "version": "1.0.0",
+  "description": "E2E tests for MERN app",
+  "main": "selenium-test.js",
+  "scripts": {
+    "test": "node selenium-test.js"
+  },
+  "dependencies": {
+    "selenium-webdriver": "^4.15.0"
+  }
+}
