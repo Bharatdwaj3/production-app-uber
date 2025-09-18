@@ -1,7 +1,7 @@
 const { Builder, By, until } = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 
-async function debugTest() {
+async function runTest() {
     let driver;
     
     try {
@@ -138,4 +138,4 @@ async function debugTest() {
 }
 
 // Run the debug test
-debugTest();
+runTest();
