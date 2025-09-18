@@ -58,7 +58,7 @@ pipeline{
             }
         }
     }
-}e:\Prog_Lang_Sem_2_MCA\production-app\tests
+}
         stage('Cleanup'){
             steps{
                 echo 'Cleaning up...'

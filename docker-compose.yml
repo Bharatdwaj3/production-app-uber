@@ -24,20 +24,22 @@ services:
       - /app/node_modules
     command: npm run dev -- --host
     ports:
-      - 5173:5173
+      - 5175:5175
     depends_on:
       - api
 
   selenium:
-    image: selenium/standalone-chrome:latest
+    image: selenium/standalone-chrome:4.0.0
     container_name: selenium-grid
     ports:
       - "4444:4444"
       - "7900:7900"
     environment:
       - SE_VNC_NO_PASSWORD=1
+      - SE_NODE_MAX_SESSIONS=1
     volumes:
       - /dev/shm:/dev/shm
+    shm_size: 2gb
 
   tests:
     container_name: e2e-tests
